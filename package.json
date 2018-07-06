@@ -1,5 +1,5 @@
 {
-  "name": "@oliviaboni/react-canvas-knob",
+  "name": "react-canvas-knob",
   "version": "0.5.6",
   "description": "HTML5 Canvas-based React knob/dial component",
   "main": "lib/index.js",
