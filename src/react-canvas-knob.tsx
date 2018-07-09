@@ -39,7 +39,7 @@ export interface IKnobState {
 class Knob extends React.Component<IKnobProps, IKnobState> {
     static propTypes = {};
 
-    static defaultProps = {
+    static defaultProps:Partial<IKnobProps> = {
         onChangeEnd: () => {},
         min: 0,
         max: 100,
@@ -56,9 +56,7 @@ class Knob extends React.Component<IKnobProps, IKnobState> {
         fontWeight: 'bold',
         clockwise: true,
         cursor: false,
-        cursorTwo: false,
-        connector: false,
-        connectorColor: '#FFF',
+        connector: null,
         stopper: true,
         readOnly: false,
         disableTextInput: false,
