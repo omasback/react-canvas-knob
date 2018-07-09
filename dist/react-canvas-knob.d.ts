@@ -45,36 +45,7 @@ export interface IKnobState {
 }
 declare class Knob extends React.Component<IKnobProps, IKnobState> {
     static propTypes: {};
-    static defaultProps: {
-        onChangeEnd: () => void;
-        min: number;
-        max: number;
-        step: number;
-        log: boolean;
-        width: number;
-        height: number;
-        thickness: number;
-        lineCap: string;
-        bgColor: string;
-        fgColor: string;
-        inputColor: string;
-        font: string;
-        fontWeight: string;
-        clockwise: boolean;
-        cursor: boolean;
-        cursorTwo: boolean;
-        connector: boolean;
-        connectorColor: string;
-        stopper: boolean;
-        readOnly: boolean;
-        disableTextInput: boolean;
-        displayInput: boolean;
-        angleArc: number;
-        angleOffset: number;
-        disableMouseWheel: boolean;
-        className: any;
-        canvasClassName: any;
-    };
+    static defaultProps: Partial<IKnobProps>;
     angleArc: number;
     angleOffset: number;
     startAngle: number;
