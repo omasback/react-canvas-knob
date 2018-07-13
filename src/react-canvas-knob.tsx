@@ -1,36 +1,44 @@
 import * as React from 'react';
 
 export interface IKnobProps extends React.DOMAttributes<{}> {
-    value: number;
-    onChange: (event) => void;
-    onChangeEnd: (event) => void;
-    min: number;
-    max: number;
-    step: number;
-    log: boolean;
-    width: number;
-    height: number;
-    thickness: number;
-    lineCap: 'butt' | 'round';
-    bgColor: string;
-    fgColor: string;
-    inputColor: string;
-    font: string;
-    fontWeight: string;
-    clockwise: boolean;
-    cursor: number | boolean | { value?: number; widthMultiplier?: number; color?: string }[];
-    connector: { value?: number; width?: number; color?: string };
-    stopper: boolean;
-    readOnly: boolean;
-    disableTextInput: boolean;
-    displayInput: boolean;
-    displayCustom: Function;
-    angleArc: number;
-    angleOffset: number;
-    disableMouseWheel: boolean;
-    title: string;
-    className: string;
-    canvasClassName: string;
+    value?: number;
+    onChange?: (event) => void;
+    onChangeEnd?: (event) => void;
+    min?: number;
+    max?: number;
+    step?: number;
+    log?: boolean;
+    width?: number;
+    height?: number;
+    thickness?: number;
+    lineCap?: 'butt' | 'round';
+    bgColor?: string;
+    fgColor?: string;
+    inputColor?: string;
+    font?: string;
+    fontWeight?: string;
+    clockwise?: boolean;
+    cursor?: number | boolean | {
+        value?: number;
+        widthMultiplier?: number;
+        color?: string;
+    }[];
+    connector?: {
+        value?: number;
+        width?: number;
+        color?: string;
+    };
+    stopper?: boolean;
+    readOnly?: boolean;
+    disableTextInput?: boolean;
+    displayInput?: boolean;
+    displayCustom?: Function;
+    angleArc?: number;
+    angleOffset?: number;
+    disableMouseWheel?: boolean;
+    title?: string;
+    className?: string;
+    canvasClassName?: string;
 }
 export interface IKnobState {
     isFocused: boolean;
