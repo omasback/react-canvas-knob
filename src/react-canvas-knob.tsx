@@ -12,7 +12,7 @@ export interface IKnobProps extends React.DOMAttributes<{}> {
     height?: number;
     thickness?: number;
     lineCap?: 'butt' | 'round';
-    bgColor?: string;
+    bgColor?: string | string[];
     fgColor?: string;
     inputColor?: string;
     font?: string;
@@ -302,7 +302,14 @@ class Knob extends React.Component<IKnobProps, IKnobState> {
         ctx.lineCap = this.props.lineCap;
         // background arc
         ctx.beginPath();
-        ctx.strokeStyle = this.props.bgColor;
+        if (Array.isArray(this.props.bgColor)) {
+            const gradient = ctx.createLinearGradient(0, 0, this.w, 0);
+            gradient.addColorStop(0, this.props.bgColor[0]);
+            gradient.addColorStop(1, this.props.bgColor[1]);
+            ctx.strokeStyle = gradient
+        } else {
+            ctx.strokeStyle = this.props.bgColor;
+        }
         ctx.arc(this.xy, this.xy, this.radius, this.endAngle - 0.00001, this.startAngle + 0.00001, true);
         ctx.stroke();
         // connector
