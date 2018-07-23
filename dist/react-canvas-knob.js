@@ -203,7 +203,15 @@ class Knob extends React.Component {
         ctx.lineWidth = this.lineWidth;
         ctx.lineCap = this.props.lineCap;
         ctx.beginPath();
-        ctx.strokeStyle = this.props.bgColor;
+        if (Array.isArray(this.props.bgColor)) {
+            const gradient = ctx.createLinearGradient(0, 0, this.w, 0);
+            gradient.addColorStop(0, this.props.bgColor[0]);
+            gradient.addColorStop(1, this.props.bgColor[1]);
+            ctx.strokeStyle = gradient;
+        }
+        else {
+            ctx.strokeStyle = this.props.bgColor;
+        }
         ctx.arc(this.xy, this.xy, this.radius, this.endAngle - 0.00001, this.startAngle + 0.00001, true);
         ctx.stroke();
         if (this.props.connector && Array.isArray(this.props.cursor) && this.props.cursor.length > 1) {

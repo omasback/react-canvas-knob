@@ -1,9 +1,8 @@
-/// <reference types="react" />
 import * as React from 'react';
 export interface IKnobProps extends React.DOMAttributes<{}> {
     value?: number;
-    onChange?: (event) => void;
-    onChangeEnd?: (event) => void;
+    onChange?: (event: any) => void;
+    onChangeEnd?: (event: any) => void;
     min?: number;
     max?: number;
     step?: number;
@@ -12,7 +11,7 @@ export interface IKnobProps extends React.DOMAttributes<{}> {
     height?: number;
     thickness?: number;
     lineCap?: 'butt' | 'round';
-    bgColor?: string;
+    bgColor?: string | string[];
     fgColor?: string;
     inputColor?: string;
     font?: string;
