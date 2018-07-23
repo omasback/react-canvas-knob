@@ -359,7 +359,7 @@ class Knob extends React.Component<IKnobProps, IKnobState> {
         const { canvasClassName, className, disableMouseWheel, readOnly, title, value } = this.props;
 
         return (
-            <div className={className} style={{ width: this.w, height: this.h, display: 'inline-block' }} onWheel={readOnly || disableMouseWheel ? null : this.handleWheel}>
+            <div className={className} style={{ width: this.w, height: this.h }} onWheel={readOnly || disableMouseWheel ? null : this.handleWheel}>
                 <canvas
                     ref={ref => {
                         this.canvasRef = ref;

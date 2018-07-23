@@ -245,7 +245,7 @@ class Knob extends React.Component {
     }
     render() {
         const { canvasClassName, className, disableMouseWheel, readOnly, title, value } = this.props;
-        return (React.createElement("div", { className: className, style: { width: this.w, height: this.h, display: 'inline-block' }, onWheel: readOnly || disableMouseWheel ? null : this.handleWheel },
+        return (React.createElement("div", { className: className, style: { width: this.w, height: this.h }, onWheel: readOnly || disableMouseWheel ? null : this.handleWheel },
             React.createElement("canvas", { ref: ref => {
                     this.canvasRef = ref;
                 }, className: canvasClassName, style: { width: '100%', height: '100%' }, onMouseDown: readOnly ? null : this.handleMouseDown, title: title ? `${title}: ${value}` : value + '' }),
