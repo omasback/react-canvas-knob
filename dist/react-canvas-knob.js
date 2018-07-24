@@ -1,199 +1,214 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = require("react");
-class Knob extends React.Component {
-    constructor(props) {
-        super(props);
-        this.getArcToValue = (v, type = 'knob', cursor) => {
-            let startAngle, endAngle, cursorExt, connectStartAngle, connectEndAngle;
-            const angle = !this.props.log
-                ? ((v - this.props.min) * this.angleArc) / (this.props.max - this.props.min)
-                : Math.log(Math.pow(v / this.props.min, this.angleArc)) / Math.log(this.props.max / this.props.min);
-            if (!this.props.clockwise) {
-                startAngle = this.endAngle + 0.00001;
+var React = require("react");
+var Knob = (function (_super) {
+    __extends(Knob, _super);
+    function Knob(props) {
+        var _this = _super.call(this, props) || this;
+        _this.getArcToValue = function (v, type, cursor) {
+            if (type === void 0) { type = 'knob'; }
+            var startAngle, endAngle, cursorExt, connectStartAngle, connectEndAngle;
+            var angle = !_this.props.log
+                ? ((v - _this.props.min) * _this.angleArc) / (_this.props.max - _this.props.min)
+                : Math.log(Math.pow(v / _this.props.min, _this.angleArc)) / Math.log(_this.props.max / _this.props.min);
+            if (!_this.props.clockwise) {
+                startAngle = _this.endAngle + 0.00001;
                 endAngle = startAngle - angle - 0.00001;
-                connectStartAngle = this.connectEndAngle + 0.00001;
+                connectStartAngle = _this.connectEndAngle + 0.00001;
                 connectEndAngle = connectStartAngle - angle - 0.00001;
             }
             else {
-                startAngle = this.startAngle - 0.00001;
+                startAngle = _this.startAngle - 0.00001;
                 endAngle = startAngle + angle + 0.00001;
-                connectStartAngle = this.connectStartAngle - 0.00001;
+                connectStartAngle = _this.connectStartAngle - 0.00001;
                 connectEndAngle = connectStartAngle + angle + 0.00001;
             }
-            if (this.props.connector && Array.isArray(this.props.cursor) && this.props.cursor.length > 1 && type === 'connector') {
-                var multiplier = this.props.angleArc / (this.props.max - this.props.min) - 1;
-                var length = multiplier * (this.props.cursor[1].value - this.props.cursor[0].value);
+            if (_this.props.connector && Array.isArray(_this.props.cursor) && _this.props.cursor.length > 1 && type === 'connector') {
+                var multiplier = _this.props.angleArc / (_this.props.max - _this.props.min) - 1;
+                var length = multiplier * (_this.props.cursor[1].value - _this.props.cursor[0].value);
                 var connector = length / 100;
                 startAngle = connectEndAngle - connector;
                 endAngle += connector;
             }
-            else if (this.props.cursor && type === 'cursor') {
+            else if (_this.props.cursor && type === 'cursor') {
                 cursorExt = cursor.widthMultiplier / 100;
                 startAngle = endAngle - cursorExt;
                 endAngle += cursorExt;
             }
             return {
-                startAngle,
-                endAngle,
-                acw: !this.props.clockwise && !this.props.cursor
+                startAngle: startAngle,
+                endAngle: endAngle,
+                acw: !_this.props.clockwise && !_this.props.cursor
             };
         };
-        this.getCanvasScale = ctx => {
-            const devicePixelRatio = window.devicePixelRatio ||
+        _this.getCanvasScale = function (ctx) {
+            var devicePixelRatio = window.devicePixelRatio ||
                 window.screen.deviceXDPI / window.screen.logicalXDPI ||
                 1;
-            const backingStoreRatio = ctx.webkitBackingStorePixelRatio || 1;
+            var backingStoreRatio = ctx.webkitBackingStorePixelRatio || 1;
             return devicePixelRatio / backingStoreRatio;
         };
-        this.coerceToStep = v => {
-            let val = !this.props.log
-                ? ~~((v < 0 ? -0.5 : 0.5) + v / this.props.step) * this.props.step
-                : Math.pow(this.props.step, ~~((Math.abs(v) < 1 ? -0.5 : 0.5) + Math.log(v) / Math.log(this.props.step)));
-            val = Math.max(Math.min(val, this.props.max), this.props.min);
+        _this.coerceToStep = function (v) {
+            var val = !_this.props.log
+                ? ~~((v < 0 ? -0.5 : 0.5) + v / _this.props.step) * _this.props.step
+                : Math.pow(_this.props.step, ~~((Math.abs(v) < 1 ? -0.5 : 0.5) + Math.log(v) / Math.log(_this.props.step)));
+            val = Math.max(Math.min(val, _this.props.max), _this.props.min);
             if (isNaN(val)) {
                 val = 0;
             }
             return Math.round(val * 1000) / 1000;
         };
-        this.eventToValue = e => {
-            const bounds = this.canvasRef.getBoundingClientRect();
-            const x = e.clientX - bounds.left;
-            const y = e.clientY - bounds.top;
-            let a = Math.atan2(x - this.w / 2, this.w / 2 - y) - this.angleOffset;
-            if (!this.props.clockwise) {
-                a = this.angleArc - a - 2 * Math.PI;
+        _this.eventToValue = function (e) {
+            var bounds = _this.canvasRef.getBoundingClientRect();
+            var x = e.clientX - bounds.left;
+            var y = e.clientY - bounds.top;
+            var a = Math.atan2(x - _this.w / 2, _this.w / 2 - y) - _this.angleOffset;
+            if (!_this.props.clockwise) {
+                a = _this.angleArc - a - 2 * Math.PI;
             }
-            if (this.angleArc !== Math.PI * 2 && a < 0 && a > -0.5) {
+            if (_this.angleArc !== Math.PI * 2 && a < 0 && a > -0.5) {
                 a = 0;
             }
             else if (a < 0) {
                 a += Math.PI * 2;
             }
-            const val = !this.props.log ? (a * (this.props.max - this.props.min)) / this.angleArc + this.props.min : Math.pow(this.props.max / this.props.min, a / this.angleArc) * this.props.min;
-            return this.coerceToStep(val);
+            var val = !_this.props.log ? (a * (_this.props.max - _this.props.min)) / _this.angleArc + _this.props.min : Math.pow(_this.props.max / _this.props.min, a / _this.angleArc) * _this.props.min;
+            return _this.coerceToStep(val);
         };
-        this.handleMouseDown = e => {
-            this.props.onChange(this.eventToValue(e));
-            document.addEventListener('mousemove', this.handleMouseMove);
-            document.addEventListener('mouseup', this.handleMouseUp);
-            document.addEventListener('keyup', this.handleEsc);
+        _this.handleMouseDown = function (e) {
+            _this.props.onChange(_this.eventToValue(e));
+            document.addEventListener('mousemove', _this.handleMouseMove);
+            document.addEventListener('mouseup', _this.handleMouseUp);
+            document.addEventListener('keyup', _this.handleEsc);
         };
-        this.handleMouseMove = e => {
+        _this.handleMouseMove = function (e) {
             e.preventDefault();
-            this.props.onChange(this.eventToValue(e));
+            _this.props.onChange(_this.eventToValue(e));
         };
-        this.handleMouseUp = (e) => {
-            this.props.onChangeEnd(this.eventToValue(e));
-            document.removeEventListener('mousemove', this.handleMouseMove);
-            document.removeEventListener('mouseup', this.handleMouseUp);
-            document.removeEventListener('keyup', this.handleEsc);
+        _this.handleMouseUp = function (e) {
+            _this.props.onChangeEnd(_this.eventToValue(e));
+            document.removeEventListener('mousemove', _this.handleMouseMove);
+            document.removeEventListener('mouseup', _this.handleMouseUp);
+            document.removeEventListener('keyup', _this.handleEsc);
         };
-        this.handleTouchStart = e => {
+        _this.handleTouchStart = function (e) {
             e.preventDefault();
-            this.touchIndex = e.targetTouches.length - 1;
-            this.props.onChange(this.eventToValue(e.targetTouches[this.touchIndex]));
-            document.addEventListener('touchmove', this.handleTouchMove, { passive: false });
-            document.addEventListener('touchend', this.handleTouchEnd);
-            document.addEventListener('touchcancel', this.handleTouchEnd);
+            _this.touchIndex = e.targetTouches.length - 1;
+            _this.props.onChange(_this.eventToValue(e.targetTouches[_this.touchIndex]));
+            document.addEventListener('touchmove', _this.handleTouchMove, { passive: false });
+            document.addEventListener('touchend', _this.handleTouchEnd);
+            document.addEventListener('touchcancel', _this.handleTouchEnd);
         };
-        this.handleTouchMove = e => {
+        _this.handleTouchMove = function (e) {
             e.preventDefault();
-            this.props.onChange(this.eventToValue(e.targetTouches[this.touchIndex]));
+            _this.props.onChange(_this.eventToValue(e.targetTouches[_this.touchIndex]));
         };
-        this.handleTouchEnd = e => {
-            this.props.onChangeEnd(this.eventToValue(e.changedTouches[this.touchIndex]));
-            document.removeEventListener('touchmove', this.handleTouchMove);
-            document.removeEventListener('touchend', this.handleTouchEnd);
-            document.removeEventListener('touchcancel', this.handleTouchEnd);
+        _this.handleTouchEnd = function (e) {
+            _this.props.onChangeEnd(_this.eventToValue(e.changedTouches[_this.touchIndex]));
+            document.removeEventListener('touchmove', _this.handleTouchMove);
+            document.removeEventListener('touchend', _this.handleTouchEnd);
+            document.removeEventListener('touchcancel', _this.handleTouchEnd);
         };
-        this.handleEsc = e => {
+        _this.handleEsc = function (e) {
             if (e.keyCode === 27) {
                 e.preventDefault();
-                this.handleMouseUp();
+                _this.handleMouseUp();
             }
         };
-        this.handleTextInput = e => {
-            const val = Math.max(Math.min(+e.target.value, this.props.max), this.props.min) || this.props.min;
-            this.props.onChange(val);
+        _this.handleTextInput = function (e) {
+            var val = Math.max(Math.min(+e.target.value, _this.props.max), _this.props.min) || _this.props.min;
+            _this.props.onChange(val);
         };
-        this.handleWheel = e => {
+        _this.handleWheel = function (e) {
             e.preventDefault();
             if (e.deltaX > 0 || e.deltaY > 0) {
-                this.props.onChange(this.coerceToStep(!this.props.log ? this.props.value + this.props.step : this.props.value * this.props.step));
+                _this.props.onChange(_this.coerceToStep(!_this.props.log ? _this.props.value + _this.props.step : _this.props.value * _this.props.step));
             }
             else if (e.deltaX < 0 || e.deltaY < 0) {
-                this.props.onChange(this.coerceToStep(!this.props.log ? this.props.value - this.props.step : this.props.value / this.props.step));
+                _this.props.onChange(_this.coerceToStep(!_this.props.log ? _this.props.value - _this.props.step : _this.props.value / _this.props.step));
             }
         };
-        this.handleArrowKey = e => {
+        _this.handleArrowKey = function (e) {
             if (e.keyCode === 37 || e.keyCode === 40) {
                 e.preventDefault();
-                this.props.onChange(this.coerceToStep(!this.props.log ? this.props.value - this.props.step : this.props.value / this.props.step));
+                _this.props.onChange(_this.coerceToStep(!_this.props.log ? _this.props.value - _this.props.step : _this.props.value / _this.props.step));
             }
             else if (e.keyCode === 38 || e.keyCode === 39) {
                 e.preventDefault();
-                this.props.onChange(this.coerceToStep(!this.props.log ? this.props.value + this.props.step : this.props.value * this.props.step));
+                _this.props.onChange(_this.coerceToStep(!_this.props.log ? _this.props.value + _this.props.step : _this.props.value * _this.props.step));
             }
         };
-        this.inputStyle = () => ({
-            width: `${(this.w / 2 + 4) >> 0}px`,
-            height: `${(this.w / 3) >> 0}px`,
-            position: 'absolute',
-            verticalAlign: 'middle',
-            marginTop: `${(this.w / 3) >> 0}px`,
-            marginLeft: `-${((this.w * 3) / 4 + 2) >> 0}px`,
-            border: 0,
-            background: 'none',
-            font: `${this.props.fontWeight} ${(this.w / this.digits) >> 0}px ${this.props.font}`,
-            textAlign: 'center',
-            color: this.props.inputColor || this.props.fgColor,
-            padding: '0px',
-            WebkitAppearance: 'none'
-        });
-        this.renderCenter = () => {
-            const { displayCustom, displayInput, disableTextInput, readOnly, value } = this.props;
+        _this.inputStyle = function () {
+            return ({
+                width: ((_this.w / 2 + 4) >> 0) + "px",
+                height: ((_this.w / 3) >> 0) + "px",
+                position: 'absolute',
+                verticalAlign: 'middle',
+                marginTop: ((_this.w / 3) >> 0) + "px",
+                marginLeft: "-" + (((_this.w * 3) / 4 + 2) >> 0) + "px",
+                border: 0,
+                background: 'none',
+                font: _this.props.fontWeight + " " + ((_this.w / _this.digits) >> 0) + "px " + _this.props.font,
+                textAlign: 'center',
+                color: _this.props.inputColor || _this.props.fgColor,
+                padding: '0px',
+                WebkitAppearance: 'none'
+            });
+        };
+        _this.renderCenter = function () {
+            var _a = _this.props, displayCustom = _a.displayCustom, displayInput = _a.displayInput, disableTextInput = _a.disableTextInput, readOnly = _a.readOnly, value = _a.value;
             if (displayInput) {
-                return React.createElement("input", { style: this.inputStyle(), type: "text", value: value, onChange: this.handleTextInput, onKeyDown: this.handleArrowKey, readOnly: readOnly || disableTextInput });
+                return React.createElement("input", { style: _this.inputStyle(), type: "text", value: value, onChange: _this.handleTextInput, onKeyDown: _this.handleArrowKey, readOnly: readOnly || disableTextInput });
             }
             else if (displayCustom && typeof displayCustom === 'function') {
                 return displayCustom();
             }
             return null;
         };
-        this.w = this.props.width || 200;
-        this.h = this.props.height || this.w;
-        this.angleArc = (this.props.angleArc * Math.PI) / 180;
-        this.angleOffset = (this.props.angleOffset * Math.PI) / 180;
-        this.startAngle = 1.5 * Math.PI + this.angleOffset;
-        this.endAngle = 1.5 * Math.PI + this.angleOffset + this.angleArc;
-        this.connectStartAngle = 1.5 * Math.PI + this.angleOffset;
-        this.connectEndAngle = 1.5 * Math.PI + this.angleOffset + this.angleArc;
-        this.digits = Math.max(String(Math.abs(this.props.min)).length, String(Math.abs(this.props.max)).length, 2) + 2;
+        _this.w = _this.props.width || 200;
+        _this.h = _this.props.height || _this.w;
+        _this.angleArc = (_this.props.angleArc * Math.PI) / 180;
+        _this.angleOffset = (_this.props.angleOffset * Math.PI) / 180;
+        _this.startAngle = 1.5 * Math.PI + _this.angleOffset;
+        _this.endAngle = 1.5 * Math.PI + _this.angleOffset + _this.angleArc;
+        _this.connectStartAngle = 1.5 * Math.PI + _this.angleOffset;
+        _this.connectEndAngle = 1.5 * Math.PI + _this.angleOffset + _this.angleArc;
+        _this.digits = Math.max(String(Math.abs(_this.props.min)).length, String(Math.abs(_this.props.max)).length, 2) + 2;
+        return _this;
     }
-    componentDidMount() {
+    Knob.prototype.componentDidMount = function () {
         this.drawCanvas();
         if (!this.props.readOnly) {
             this.canvasRef.addEventListener('touchstart', this.handleTouchStart, { passive: false });
         }
-    }
-    componentWillReceiveProps(nextProps) {
+    };
+    Knob.prototype.componentWillReceiveProps = function (nextProps) {
         if (nextProps.width && this.w !== nextProps.width) {
             this.w = nextProps.width;
         }
         if (nextProps.height && this.h !== nextProps.height) {
             this.h = nextProps.height;
         }
-    }
-    componentDidUpdate() {
+    };
+    Knob.prototype.componentDidUpdate = function () {
         this.drawCanvas();
-    }
-    componentWillUnmount() {
+    };
+    Knob.prototype.componentWillUnmount = function () {
         this.canvasRef.removeEventListener('touchstart', this.handleTouchStart);
-    }
-    drawCanvas() {
-        const ctx = this.canvasRef.getContext('2d');
-        const scale = this.getCanvasScale(ctx);
+    };
+    Knob.prototype.drawCanvas = function () {
+        var ctx = this.canvasRef.getContext('2d');
+        var scale = this.getCanvasScale(ctx);
         this.canvasRef.width = this.w * scale;
         this.canvasRef.height = this.h * scale;
         ctx.scale(scale, scale);
@@ -204,7 +219,7 @@ class Knob extends React.Component {
         ctx.lineCap = this.props.lineCap;
         ctx.beginPath();
         if (Array.isArray(this.props.bgColor)) {
-            const gradient = ctx.createLinearGradient(0, 0, this.w, 0);
+            var gradient = ctx.createLinearGradient(0, 0, this.w, 0);
             gradient.addColorStop(0, this.props.bgColor[0]);
             gradient.addColorStop(1, this.props.bgColor[1]);
             ctx.strokeStyle = gradient;
@@ -215,8 +230,8 @@ class Knob extends React.Component {
         ctx.arc(this.xy, this.xy, this.radius, this.endAngle - 0.00001, this.startAngle + 0.00001, true);
         ctx.stroke();
         if (this.props.connector && Array.isArray(this.props.cursor) && this.props.cursor.length > 1) {
-            const average = (this.props.cursor[0].value + this.props.cursor[1].value) / 2;
-            const c = this.getArcToValue(average, 'connector');
+            var average = (this.props.cursor[0].value + this.props.cursor[1].value) / 2;
+            var c = this.getArcToValue(average, 'connector');
             ctx.beginPath();
             ctx.strokeStyle = this.props.connector.color;
             ctx.lineWidth = this.props.connector.width || this.lineWidth;
@@ -224,10 +239,10 @@ class Knob extends React.Component {
             ctx.stroke();
         }
         if (this.props.cursor && Array.isArray(this.props.cursor) && this.props.cursor.length > 0) {
-            for (let i = this.props.cursor.length - 1; i >= 0; i--) {
-                const cursor = this.props.cursor[i];
-                const value = cursor.value ? cursor.value : this.props.value;
-                const b = this.getArcToValue(value, 'cursor', cursor);
+            for (var i = this.props.cursor.length - 1; i >= 0; i--) {
+                var cursor = this.props.cursor[i];
+                var value = cursor.value ? cursor.value : this.props.value;
+                var b = this.getArcToValue(value, 'cursor', cursor);
                 ctx.beginPath();
                 ctx.strokeStyle = this.props.cursor[i].color || this.props.fgColor;
                 ctx.lineWidth = this.props.cursor[i].widthMultiplier ? this.lineWidth * this.props.cursor[i].widthMultiplier : this.lineWidth;
@@ -236,49 +251,51 @@ class Knob extends React.Component {
             }
         }
         else if (this.props.cursor) {
-            const a = this.getArcToValue(this.props.value);
+            var a = this.getArcToValue(this.props.value);
             ctx.beginPath();
             ctx.strokeStyle = this.props.fgColor;
             ctx.arc(this.xy, this.xy, this.radius, a.startAngle, a.endAngle, a.acw);
             ctx.stroke();
         }
-    }
-    render() {
-        const { canvasClassName, className, disableMouseWheel, readOnly, title, value } = this.props;
+    };
+    Knob.prototype.render = function () {
+        var _this = this;
+        var _a = this.props, canvasClassName = _a.canvasClassName, className = _a.className, disableMouseWheel = _a.disableMouseWheel, readOnly = _a.readOnly, title = _a.title, value = _a.value;
         return (React.createElement("div", { className: className, style: { width: this.w, height: this.h }, onWheel: readOnly || disableMouseWheel ? null : this.handleWheel },
-            React.createElement("canvas", { ref: ref => {
-                    this.canvasRef = ref;
-                }, className: canvasClassName, style: { width: '100%', height: '100%' }, onMouseDown: readOnly ? null : this.handleMouseDown, title: title ? `${title}: ${value}` : value + '' }),
+            React.createElement("canvas", { ref: function (ref) {
+                    _this.canvasRef = ref;
+                }, className: canvasClassName, style: { width: '100%', height: '100%' }, onMouseDown: readOnly ? null : this.handleMouseDown, title: title ? title + ": " + value : value + '' }),
             this.renderCenter()));
-    }
-}
-Knob.propTypes = {};
-Knob.defaultProps = {
-    onChangeEnd: () => { },
-    min: 0,
-    max: 100,
-    step: 1,
-    log: false,
-    width: 200,
-    height: 200,
-    thickness: 0.35,
-    lineCap: 'butt',
-    bgColor: '#EEE',
-    fgColor: '#EA2',
-    inputColor: '',
-    font: 'Arial',
-    fontWeight: 'bold',
-    clockwise: true,
-    cursor: false,
-    connector: null,
-    stopper: true,
-    readOnly: false,
-    disableTextInput: false,
-    displayInput: true,
-    angleArc: 360,
-    angleOffset: 0,
-    disableMouseWheel: false,
-    className: null,
-    canvasClassName: null
-};
+    };
+    Knob.propTypes = {};
+    Knob.defaultProps = {
+        onChangeEnd: function () { },
+        min: 0,
+        max: 100,
+        step: 1,
+        log: false,
+        width: 200,
+        height: 200,
+        thickness: 0.35,
+        lineCap: 'butt',
+        bgColor: '#EEE',
+        fgColor: '#EA2',
+        inputColor: '',
+        font: 'Arial',
+        fontWeight: 'bold',
+        clockwise: true,
+        cursor: false,
+        connector: null,
+        stopper: true,
+        readOnly: false,
+        disableTextInput: false,
+        displayInput: true,
+        angleArc: 360,
+        angleOffset: 0,
+        disableMouseWheel: false,
+        className: null,
+        canvasClassName: null
+    };
+    return Knob;
+}(React.Component));
 exports.default = Knob;
